@@ -6,11 +6,15 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_openai import ChatOpenAI
 from langchain_ollama import ChatOllama
 
+<<<<<<< HEAD
 from agents.linkedin_lookup_agent import lookup as linkedin_lookup_agent
 from agents.twitter_lookup_agent import lookup as twitter_lookup_agent
 from third_party.linkedin import scrape_linkedin_profile
 from third_party.twitter import scrape_user_tweets
 from output_parsers import Summary, summary_parser
+=======
+from third_party.linkedin import scrape_linkedin_profile
+>>>>>>> 50c7328 (refactor ice_breaker & add third_party package for linkedin profile scrapping)
 
 information = """
 Elon Reeve Musk (born June 28, 1971) is a businessman known for his key roles in the space company SpaceX and the automotive company Tesla, Inc. He is also known for his ownership of X Corp. (the company that operates the social media platform X, formerly Twitter), and his role in the founding of the Boring Company, xAI, Neuralink, and OpenAI. Musk is the wealthiest individual in the world; as of December 2024, Forbes estimates his net worth to be US$430 billion.[2]
@@ -92,5 +96,21 @@ if __name__ == '__main__':
     #     mock=True
     # )
 
+<<<<<<< HEAD
     # call the ice_break_with
     ice_break_with(name="Yew Kong NG DBS Bank")
+=======
+    # setup the chain using lcel & use StrOutputParser to format the object into cleaner string format
+    chain = summary_prompt_template | llm | StrOutputParser()
+
+    # to make use of the linkedin data that is scrapped using linkedin.py
+    linkedin_data = scrape_linkedin_profile(
+        linkedin_profile_url="https://www.linkedin.com/in/eden-marco/",
+        mock=True
+    )
+
+    # the key should match
+    res = chain.invoke(input={"information": linkedin_data})
+
+    print(res)
+>>>>>>> 50c7328 (refactor ice_breaker & add third_party package for linkedin profile scrapping)
