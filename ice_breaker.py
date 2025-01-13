@@ -5,6 +5,7 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_openai import ChatOpenAI
 from langchain_ollama import ChatOllama
 
+from agents.linkedin_lookup_agent import lookup as linkedin_lookup_agent
 from third_party.linkedin import scrape_linkedin_profile
 
 information = """
@@ -15,9 +16,11 @@ A member of the wealthy South African Musk family, Musk was born in Pretoria and
 In 2004, Musk was an early investor in electric-vehicle manufacturer Tesla Motors, Inc. (later Tesla, Inc.), providing most of the initial financing and assuming the position of the company's chairman. He later became the product architect and, in 2008, the CEO. In 2006, Musk helped create SolarCity, a solar energy company that was acquired by Tesla in 2016 and became Tesla Energy. In 2013, he proposed a hyperloop high-speed vactrain transportation system. In 2015, he co-founded OpenAI, a nonprofit artificial intelligence research company. The following year Musk co-founded Neuralink, a neurotechnology company developing brain–computer interfaces, and the Boring Company, a tunnel construction company. In 2018 the U.S. Securities and Exchange Commission (SEC) sued Musk, alleging that he had falsely announced that he had secured funding for a private takeover of Tesla. To settle the case Musk stepped down as the chairman of Tesla and paid a $20 million fine. In 2022, he acquired Twitter for $44 billion, merged the company into the newly-created X Corp. and rebranded the service as X the following year. In March 2023, Musk founded xAI, an artificial-intelligence company.
 """
 
-if __name__ == '__main__':
-    load_dotenv()
-    print("Hello LangChain!")
+
+def ice_break_with(name: str) -> str:
+    linkedin_url = linkedin_lookup_agent(name=name)
+    linkedin_data = scrape_linkedin_profile(
+        linkedin_profile_url=linkedin_url, mock=True)
 
     # the summary template the curly braces allows us to pass in input dynamically
     summary_template = """
@@ -30,28 +33,36 @@ if __name__ == '__main__':
     summary_prompt_template = PromptTemplate(
         input_variables=["information"], template=summary_template)
 
-    # the chat model (temperature = 0 --> means not creative)
-    # llm = ChatOpenAI(temperature=0, model_name="gpt-3.5-turbo")
+    # using ollama open source model (llama3.1 - 8B parameters 5gb model)
+    # llm = ChatOllama(model="llama3.1", temperature=0)
 
     # using ollama open source model (mistral - 7B parameters 4gb model)
-    # llm = ChatOllama(model="mistral")
-
-    # using ollama open source model (alibaba qwq model - 32B parameters 20gb model)
-    # llm = ChatOllama(model="qwq")
-
-    # using ollama open source model (llama3.1 - 8B parameters 5gb model)
-    llm = ChatOllama(model="llama3.1")
+    llm = ChatOllama(model="mistral")
 
     # setup the chain using lcel & use StrOutputParser to format the object into cleaner string format
     chain = summary_prompt_template | llm | StrOutputParser()
-
-    # to make use of the linkedin data that is scrapped using linkedin.py
-    linkedin_data = scrape_linkedin_profile(
-        linkedin_profile_url="https://www.linkedin.com/in/eden-marco/",
-        mock=True
-    )
 
     # the key should match
     res = chain.invoke(input={"information": linkedin_data})
 
     print(res)
+
+
+if __name__ == '__main__':
+    load_dotenv()
+    print("Hello LangChain!")
+
+    # the chat model (temperature = 0 --> means not creative)
+    # llm = ChatOpenAI(temperature=0, model_name="gpt-3.5-turbo")
+
+    # using ollama open source model (alibaba qwq model - 32B parameters 20gb model)
+    # llm = ChatOllama(model="qwq")
+
+    # to make use of the linkedin data that is scrapped using linkedin.py
+    # linkedin_data = scrape_linkedin_profile(
+    #     linkedin_profile_url="https://www.linkedin.com/in/ngyewkong/",
+    #     mock=True
+    # )
+
+    # call the ice_break_with
+    ice_break_with(name="NG YEW KONG DBS BANK DevOps Engineer")

@@ -13,7 +13,7 @@ def scrape_linkedin_profile(linkedin_profile_url: str, mock: bool = False):
 
     # if mock is true -> return the pre-downloaded json data
     if mock:
-        linkedin_profile_url = "https://gist.githubusercontent.com/emarco177/0d6a3f93dd06634d95e46a2782ed7490/raw/78233eb934aa9850b689471a604465b188e761a0/eden-marco.json"
+        linkedin_profile_url = "https://gist.github.com/ngyewkong/0f926ce5eadd2b2dbf3aed915beb34c7"
         response = requests.get(
             linkedin_profile_url,
             timeout=10,
@@ -51,7 +51,7 @@ def scrape_linkedin_profile(linkedin_profile_url: str, mock: bool = False):
 if __name__ == "__main__":
     print(
         scrape_linkedin_profile(
-            linkedin_profile_url="https://www.linkedin.com/ngyewkong",
+            linkedin_profile_url="https://www.linkedin.com/in/ngyewkong",
             mock=True
         )
     )
