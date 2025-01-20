@@ -11,11 +11,14 @@ langchainhub = "*"
 ollama = "*"
 langchain-ollama = "*"
 tweepy = "*"
+<<<<<<< HEAD
 flask = "*"
 langchain-pinecone = "*"
 black = "*"
 pypdf = "*"
 faiss-cpu = "*"
+=======
+>>>>>>> 3c3ec3d (impl twitter lookup)
 
 [dev-packages]
 
