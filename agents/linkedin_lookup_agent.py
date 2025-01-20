@@ -16,7 +16,7 @@ load_dotenv()
 def lookup(name: str) -> str:
     agent_llm = ChatOllama(
         temperature=0,
-        model="llama3.1"
+        model="phi"
     )
 
     template = """
@@ -50,7 +50,7 @@ def lookup(name: str) -> str:
     # the final agent that you invoke
     # verbose to True to see the logs and understand how the agent is working
     agent_executor = AgentExecutor(
-        agent=agent, tools=tools_for_agent, verbose=True, handle_parsing_errors=True
+        agent=agent, tools=tools_for_agent, verbose=True,
     )
 
     result = agent_executor.invoke(

@@ -32,3 +32,4 @@
   - Chain Of Thought Reasoning via Prompt Engineering
 - LLMs do not have access to external data that it is not trained on -> agents allow us to connect third party services to interact
 - langchain tools allow us to convert python functions into tools which we can allow llm to have access to
+- note: use raw gist if not will have JSONDECODEERROR

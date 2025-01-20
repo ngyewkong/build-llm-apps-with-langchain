@@ -37,7 +37,10 @@ def ice_break_with(name: str) -> str:
     # llm = ChatOllama(model="llama3.1", temperature=0)
 
     # using ollama open source model (mistral - 7B parameters 4gb model)
-    llm = ChatOllama(model="mistral")
+    # llm = ChatOllama(model="mistral")
+
+    # using ollama open source model (phi - 2.7B parameters 1.6gb model)
+    llm = ChatOllama(model="phi")
 
     # setup the chain using lcel & use StrOutputParser to format the object into cleaner string format
     chain = summary_prompt_template | llm | StrOutputParser()
