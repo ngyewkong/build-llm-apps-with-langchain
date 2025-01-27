@@ -13,7 +13,7 @@ def scrape_linkedin_profile(linkedin_profile_url: str, mock: bool = False):
 
     # if mock is true -> return the pre-downloaded json data
     if mock:
-        linkedin_profile_url = "https://gist.github.com/ngyewkong/0f926ce5eadd2b2dbf3aed915beb34c7"
+        linkedin_profile_url = "https://gist.githubusercontent.com/ngyewkong/018c95b5ab73312148ac7d0b6f090513/raw/f4c1a557df060f2e1b81cbb7bd1986522d4d7aeb/yk_linkedin.json"
         response = requests.get(
             linkedin_profile_url,
             timeout=10,
@@ -41,9 +41,9 @@ def scrape_linkedin_profile(linkedin_profile_url: str, mock: bool = False):
         if v not in ([], "", "", None)
         and k not in ["people_also_viewed", "certifications"]
     }
-    if data.get("groups"):
-        for group_dict in data.get("groups"):
-            group_dict.pop("profile_pic_url")
+    # if data.get("groups"):
+    #     for group_dict in data.get("groups"):
+    #         group_dict.pop("profile_pic_url")
 
     return data
 

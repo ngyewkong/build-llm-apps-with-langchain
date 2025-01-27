@@ -6,7 +6,10 @@ from langchain_openai import ChatOpenAI
 from langchain_ollama import ChatOllama
 
 from agents.linkedin_lookup_agent import lookup as linkedin_lookup_agent
+from agents.twitter_lookup_agent import lookup as twitter_lookup_agent
 from third_party.linkedin import scrape_linkedin_profile
+from third_party.twitter import scrape_user_tweets
+from output_parsers import Summary, summary_parser
 
 information = """
 Elon Reeve Musk (born June 28, 1971) is a businessman known for his key roles in the space company SpaceX and the automotive company Tesla, Inc. He is also known for his ownership of X Corp. (the company that operates the social media platform X, formerly Twitter), and his role in the founding of the Boring Company, xAI, Neuralink, and OpenAI. Musk is the wealthiest individual in the world; as of December 2024, Forbes estimates his net worth to be US$430 billion.[2]
@@ -17,36 +20,55 @@ In 2004, Musk was an early investor in electric-vehicle manufacturer Tesla Motor
 """
 
 
-def ice_break_with(name: str) -> str:
+def ice_break_with(name: str) -> Summary:
     linkedin_url = linkedin_lookup_agent(name=name)
     linkedin_data = scrape_linkedin_profile(
         linkedin_profile_url=linkedin_url, mock=True)
 
+    twitter_username = twitter_lookup_agent(name=name)
+    tweets = scrape_user_tweets(
+        username=twitter_username, mock=True)
+
     # the summary template the curly braces allows us to pass in input dynamically
+    # the \n{format_instructions} -> langchain will take the schema defined in the Pydantic Object (Summary class)
+    # and plug the schema there
+    # we can set the partial variable in the prompt template to pass the Schema
     summary_template = """
-        given the information {information} about a person from I want you to create:
+        given the information about a person from linkedin {information}, 
+        and their latest twitter tweets {twitter_tweets} I want you to create:
             1. a short summary
             2. two interesting facts about them
+
+        use both information from twitter & linkedin
+        \n{format_instructions}
     """
 
     # convert to a prompt template, input variables expects a list
+    # partial variables use to pass in the schema (which is the pydantic output parser that we init earlier)
+    # .get_format_instructions is going to take the pydantic schema and paste inside the format_instructions in line 43
     summary_prompt_template = PromptTemplate(
-        input_variables=["information"], template=summary_template)
+        input_variables=["information", "twitter_tweets"],
+        partial_variables={
+            "format_instructions": summary_parser.get_format_instructions()},
+        template=summary_template)
 
     # using ollama open source model (llama3.1 - 8B parameters 5gb model)
     # llm = ChatOllama(model="llama3.1", temperature=0)
 
     # using ollama open source model (mistral - 7B parameters 4gb model)
-    # llm = ChatOllama(model="mistral")
+    llm = ChatOllama(model="mistral", temperature=0)
 
     # using ollama open source model (phi - 2.7B parameters 1.6gb model)
-    llm = ChatOllama(model="phi")
+    # llm = ChatOllama(model="phi", temperature=0)
 
     # setup the chain using lcel & use StrOutputParser to format the object into cleaner string format
-    chain = summary_prompt_template | llm | StrOutputParser()
+    # update to use the summary_parser that was created
+    chain = summary_prompt_template | llm | summary_parser
 
     # the key should match
-    res = chain.invoke(input={"information": linkedin_data})
+    # res should be a Summary object
+    res: Summary = chain.invoke(
+        input={"information": linkedin_data, "twitter_tweets": tweets})
 
     print(res)
 
@@ -68,4 +90,4 @@ if __name__ == '__main__':
     # )
 
     # call the ice_break_with
-    ice_break_with(name="NG YEW KONG DBS BANK DevOps Engineer")
+    ice_break_with(name="Yew Kong NG DBS Bank")

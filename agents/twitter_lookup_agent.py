@@ -20,8 +20,8 @@ def lookup(name: str) -> str:
     )
 
     template = """
-    Given the full name {name_of_person} I want you to get me a link to their linkedin profile page. 
-    Your answer should contain only the linkedin url.
+    Given the full name {name_of_person} I want you to get me a link to their Twitter profile page, and extract from it their username. 
+    Your final answer should only contain the person's username.
     """
 
     prompt_template = PromptTemplate(
@@ -30,10 +30,10 @@ def lookup(name: str) -> str:
 
     tools_for_agent = [
         Tool(
-            name="Crawl Google for linkedin profile page",  # name the llm going to refer to
+            name="Crawl Google for Twitter profile page",  # name the llm going to refer to
             func=get_profile_url_tavily,  # the python function that you want the tool to run
             # description is important for llm (used by llm to determine if they need to use this tool or not)
-            description="useful for when you need to get the linkedin page url",
+            description="useful for when you need to get the Twitter Page url",
         )
     ]
 
@@ -57,11 +57,11 @@ def lookup(name: str) -> str:
         input={"input": prompt_template.format_prompt(name_of_person=name)}
     )
 
-    linkedin_profile_url = result["output"]
+    twitter_profile_username = result["output"]
 
-    return linkedin_profile_url
+    return twitter_profile_username
 
 
 if __name__ == "__main__":
-    linkedin_url = lookup(name="Yew Kong NG DBS Bank")
-    print(linkedin_url)
+    twitter_username = lookup(name="Yew Kong NG DevOps Engineer")
+    print(twitter_username)
