@@ -12,6 +12,7 @@ ollama = "*"
 langchain-ollama = "*"
 tweepy = "*"
 <<<<<<< HEAD
+<<<<<<< HEAD
 flask = "*"
 langchain-pinecone = "*"
 black = "*"
@@ -19,6 +20,9 @@ pypdf = "*"
 faiss-cpu = "*"
 =======
 >>>>>>> 3c3ec3d (impl twitter lookup)
+=======
+flask = "*"
+>>>>>>> 0536de0 (add flask dep & update gist url & impl web server to serve llm endpt)
 
 [dev-packages]
 
