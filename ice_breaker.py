@@ -1,4 +1,5 @@
 import os
+from typing import Tuple
 from dotenv import load_dotenv
 from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
@@ -20,7 +21,7 @@ In 2004, Musk was an early investor in electric-vehicle manufacturer Tesla Motor
 """
 
 
-def ice_break_with(name: str) -> Summary:
+def ice_break_with(name: str) -> Tuple[Summary, str]:
     linkedin_url = linkedin_lookup_agent(name=name)
     linkedin_data = scrape_linkedin_profile(
         linkedin_profile_url=linkedin_url, mock=True)
@@ -71,6 +72,8 @@ def ice_break_with(name: str) -> Summary:
         input={"information": linkedin_data, "twitter_tweets": tweets})
 
     print(res)
+
+    return res, linkedin_data.get("profile_pic_url")
 
 
 if __name__ == '__main__':
