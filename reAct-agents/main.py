@@ -9,6 +9,7 @@ from langchain_ollama import ChatOllama
 from langchain.schema import AgentAction, AgentFinish
 from textwrap import dedent
 
+from callbacks import AgentCallbackHandler
 
 load_dotenv()
 
@@ -24,7 +25,7 @@ def get_text_length(text: str) -> int:
     print(f"get_text_length enter with {text=}")
 
     # removing non alphabetic characters
-    text = text.strip('\n').strip('"').strip("'")
+    text = text.strip("'\n").strip('"')
     return len(text)
 
 
@@ -62,7 +63,7 @@ if __name__ == "__main__":
         Begin!
 
         Question: {input}
-        Thought:\
+        Thought: {agent_scratchpad}\
     """
     )
 
@@ -79,25 +80,48 @@ if __name__ == "__main__":
         temperature=0,
         # model="deepseek-r1",
         model="mistral",
-        stop=["Observation"],
+        stop=["\nObservation"],
+        callbacks=[AgentCallbackHandler()]  # instantiate the class
     )
+
+    # keep track of the history of the agent
+    intermediate_steps = []
 
     # create agent using LCEL
     # passing in input as a dict to the prompt (tools & tools_name placeholder are partially filled earlier)
     # setting the value of the input dictionary to be dynamic using lambda function which will be done when agent.invoke()
     # ReActSingleInputOutputParser is using regex to find and search for the corresponding thought action action input
-    agent = {"input": lambda x: x["input"]
-             } | prompt | llm | ReActSingleInputOutputParser()
+    agent = (
+        {
+            "input": lambda x: x["input"],
+            "agent_scratchpad": lambda x: x["agent_scratchpad"]
+        }
+        | prompt
+        | llm
+        | ReActSingleInputOutputParser()
+    )
 
-    agent_step: Union[AgentAction, AgentFinish] = agent.invoke(
-        {"input": "What is the length in characters for the text TOTHEMOON?"})
-    print(f"response: {agent_step}\n")
+    agent_step = ""
+    while not isinstance(agent_step, AgentFinish):
+        # not getting AgentFinish when using ollama (preferably use OpenAI or GCP models)
+        agent_step: Union[AgentAction, AgentFinish] = agent.invoke(
+            {
+                "input": "What is the length in characters for the text TOTHEMOON?",
+                "agent_scratchpad": intermediate_steps
+            })
+        print(f"response: {agent_step}\n")
 
-    if isinstance(agent_step, AgentAction):
-        # find the tool name if AgentAction is returned
-        tool_name = agent_step.tool
-        tool_to_use = find_tool_by_name(tools, tool_name)
-        tool_input = agent_step.tool_input
+        if isinstance(agent_step, AgentAction):
+            # find the tool name if AgentAction is returned
+            tool_name = agent_step.tool
+            tool_to_use = find_tool_by_name(tools, tool_name)
+            tool_input = agent_step.tool_input
 
-        observation = tool_to_use.func(str(tool_input))
-        print(f"Observation: {observation}\n")
+            observation = tool_to_use.func(str(tool_input))
+            print(f"Observation: {observation}\n")
+            # to add the history after each cycle (both the reasoning history & the action chosen)
+            intermediate_steps.append((agent_step, str(observation)))
+            print(f"Intermediate Steps: {intermediate_steps}\n")
+
+    if isinstance(agent_step, AgentFinish):
+        print(agent_step.return_values)
