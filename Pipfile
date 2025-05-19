@@ -14,6 +14,8 @@ tweepy = "*"
 flask = "*"
 langchain-pinecone = "*"
 black = "*"
+pypdf = "*"
+faiss-cpu = "*"
 
 [dev-packages]
 
