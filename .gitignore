@@ -171,3 +171,6 @@ cython_debug/
 .pypirc
 
 vector-dbs-in-mem/faiss_index_react
+proj-doc-asst/langchain-docs
+
+**/**/.DS_Store
