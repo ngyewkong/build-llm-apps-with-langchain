@@ -17,8 +17,6 @@
   - from dotenv import load_dotenv (to pass env variables into code)
 - set $PYTHONPATH in shell env (bash or zsh) to include the project workdir
   - so that nested modules/packages can be picked up by vscode during runtime
-- set $PYTHONPATH in shell env (bash or zsh) to include the project workdir
-  - so that nested modules/packages can be picked up by vscode during runtime
 
 ## Notes
 

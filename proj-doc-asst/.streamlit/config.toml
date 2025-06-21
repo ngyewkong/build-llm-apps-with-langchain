@@ -1,0 +1,7 @@
+[theme]
+base = "light"                       # or "dark" for default dark mode
+primaryColor = "#3b5fc1"
+backgroundColor = "#f7fafc"
+secondaryBackgroundColor = "#ffffff"
+textColor = "#222831"
+font = "sans serif"
