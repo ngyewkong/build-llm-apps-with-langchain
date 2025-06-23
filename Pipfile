@@ -4,9 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-langchain = "*"
 langchain-openai = "*"
-langchain-community = "*"
 langchainhub = "*"
 ollama = "*"
 langchain-ollama = "*"
@@ -27,6 +25,12 @@ streamlit-chat = "*"
 tqdm = "*"
 isort = "*"
 langchain-pinecone = "*"
+qrcode = "*"
+langchain-experimental = "*"
+langchain = "*"
+langchain-community = "*"
+pydantic = "*"
+tabulate = "*"
 
 [dev-packages]
 
