@@ -31,6 +31,7 @@ langchain = "*"
 langchain-community = "*"
 pydantic = "*"
 tabulate = "*"
+langchain-tavily = "*"
 
 [dev-packages]
 
