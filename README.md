@@ -33,3 +33,11 @@
 - LLMs do not have access to external data that it is not trained on -> agents allow us to connect third party services to interact
 - langchain tools allow us to convert python functions into tools which we can allow llm to have access to
 - note: use raw gist if not will have JSONDECODEERROR
+
+## MCP Servers
+
+- MCPdoc from langchain (https://github.com/langchain-ai/mcpdoc)
+  - retrieve latest documentations from langchain website
+- npx @modelcontextprotocol/inspector
+  - to test MCP server functionality (ensure the proxy token is copied when MCP Inspector is ran)
+    ![MCP Inspector Success Connection to MCP Server Tools](image.png)
