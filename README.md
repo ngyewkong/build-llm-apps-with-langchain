@@ -41,3 +41,29 @@
 - npx @modelcontextprotocol/inspector
   - to test MCP server functionality (ensure the proxy token is copied when MCP Inspector is ran)
     ![MCP Inspector Success Connection to MCP Server Tools](image.png)
+- MCP Client
+  - Invoke Tools
+  - Queries for Resources
+  - Interpolates Prompts
+- MCP Server
+  - Exposes Tools
+  - Exposes Resources
+  - Exposures Prompts
+- Tools (Model Controlled)
+  - Functions invoked by the LLM (eg. Search/Retrieve, Send Msg, Update DB)
+- Resources (Application Controlled)
+  - Data exposed to the application (eg. Files, DB Records, API Responses)
+- Prompts (User Controlled)
+  - Pre-defined templates for AI Interactions (eg. Doc Q&A, Transcript Summary, JSON Output)
+- LangChain's bind_tools
+  - Tools bind to LLM
+- MCP
+  - Tools bind to AI Apps (eg Cursor, windsurf, Claude Desktop, LangGraph Agent etc)
+  - MCP Clients are the one who are injecting the instructions of the tools that we need to invoke to the LLM layer
+- LangChain's MCP Adapter (https://github.com/langchain-ai/langchain-mcp-adapters)
+  - enable seamless integration of MCP tools with LangChain & LangGraph
+  - tools capabilitity
+- to run mcp servers
+  - uv run server_file.py
+- Ollama Models not all support tool calling
+  - mistral & llama 3.1 supported

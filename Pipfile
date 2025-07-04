@@ -33,6 +33,9 @@ pydantic = "*"
 tabulate = "*"
 langchain-tavily = "*"
 uv = "*"
+mcp = "*"
+langchain-mcp-adapters = "*"
+langgraph = "*"
 
 [dev-packages]
 
