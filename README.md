@@ -34,6 +34,70 @@
 - langchain tools allow us to convert python functions into tools which we can allow llm to have access to
 - note: use raw gist if not will have JSONDECODEERROR
 
+## LangChain Theory
+
+- token limit = input + llm response output
+
+  - exceed token limit due to large context etc
+  - Token Limit Handling Strategies (eg summarising documents use case)
+
+    - Stuffing (Pushing all the documents into the prompt as is without any alterations)
+
+      - from langchain.chains.summarize import load_summarize_chain
+      - gives a langchain chain that summarize documents
+      - chain_type = "stuff"
+      - load_summarize_chain(llm, chain_type="stuff")
+      - Pro: Most Intuitive and simple
+      - Con: will hit token limit once there are many documents
+      - Con: the size of payload that we can send to the server that is doing the llm inference apis (even if the llm model do not have a token limit)
+
+    - MapReduce (taking all the documents, each doc will have a new prompt containing the summary instructions and context)
+
+      - from langchain.chains.summarize import load_summarize_chain
+      - load_summarize_chain(llm, chain_type="map_reduce")
+      - applying a transformation function to a collection and creating a new collection
+        - involves a new mapping step which will take the prompts created from the documents and send to the llm
+          - each doc-llm call runs parallel (optimize performance)
+      - applying a reduction function
+        - involves a reduce step to take all the summaries and create a big final summary
+          - llm call to an iterable and produce a single final summary
+          - langchain handles it we only call the load_summarize_chain
+      - Pro: scale to a large number of documents
+      - Pro: run parallel (optimize perf & inference time)
+      - Con: making a lot of API calls (might be affected by RateLimiters)
+      - Con: Cost
+      - Con: might lose some information since we summarize each document (lose some context)
+
+    - Refine (applying a binary function to the initial value and first element of the list and and accumulating the value)
+
+      - from langchain.chains.summarize import load_summarize_chain
+      - chain = load_summarize_chain(llm, chain_type="refine")
+      - take the first summary and second document and combine together
+      - get another refined summary
+      - take the newly refined summary and third document and combine together
+      - keep refining till we end up with a final perfect summary
+      - implemented by LangChain
+
+- Memory Management
+  - Co-Reference resolution
+    - task of identifying all expressions, words or phrases in a text that refer to the same entity or concept
+    - idea of state & chat history
+    - passing the prompt to the llm some data or info that helps the LLm to make co-reference resolution
+    - if 1 hr long convo --> too much data into prompt --> exceed token limit
+    - https://python.langchain.com/docs/how_to/chatbots_memory/
+  - how LangChain handles
+    - Stuffing prev msgs into LLM prompt
+    - Stuff but trim old messages to reduct the amount of distracting info that the LLM has to deal with
+      - from langchain_core.messages import trim_messages
+      - trimmer = trim_messages(strategy="last", max_tokens=2, token_counter=len)
+      - trimmer.invoke(state["messages"]) --> call the trimmer to trim messages
+    - More complex modifications like synthesizing summaries for long running convos
+      - using a summary prompt --> summary the raw messages --> pass the summarised messages to the CheckPointer to persist and pass to LLM prompt
+    - using LangGraph CheckPointer class to persist messages to a DB
+    - CheckPointing --> every iteration LangGraph will persist it in a DB or inMemory
+      - eg from langgraph.checkpoint.memory import MemorySaver (in memory)
+      - got other types for PostgreSQL, MySQL, Redis, Mongo etc
+
 ## MCP Servers
 
 - MCPdoc from langchain (https://github.com/langchain-ai/mcpdoc)
