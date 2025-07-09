@@ -67,3 +67,23 @@
   - uv run server_file.py
 - Ollama Models not all support tool calling
   - mistral & llama 3.1 supported
+
+## LangGraph
+
+- Agentic software as state machine
+  - concepts of nodes & edges in the graph
+  - cycles
+  - state (shared across nodes & edges)
+- Core Pillars
+  - Controllability
+  - Persistence
+  - Human-in-the-loop
+  - Streaming
+- Opinionated
+  - offers a lot of building blocks
+    - running nodes in parallel
+    - conditional branching with LLMs
+    - persistence built in
+    - implement human-in-the-loop flow easily to integrate human feedback
+    - time travelling which is to replay some step that did not work correctly
+      - make debugging and tracing easier (LangSmith)
