@@ -151,3 +151,25 @@
     - implement human-in-the-loop flow easily to integrate human feedback
     - time travelling which is to replay some step that did not work correctly
       - make debugging and tracing easier (LangSmith)
+- Core Components
+  - Nodes
+    - Essentially Python Functions (special function)
+    - always take in the current GraphState & returns a dictionary {}
+    - Every Node will update the state
+    - Full Flexibility of what you want to do inside the nodes
+    - Start Node
+      - the entry point for graph execution
+    - End Node
+      - the last execution node
+    - Both the start node & end node are no operation nodes
+  - Edges
+    - Connect those nodes within the graph execution
+  - Conditional Edges
+    - Help to make decision (filtering to go which node next)
+  - Agent State
+    - dictionary that contains the information to track the graph, node execution results, temp results or chat history
+    - local to the graph ie available for every node to access within the graph execution
+    - can also be persisted into persistent storage (eg continue from previous stopped flow point)
+- Cyclic Graph
+- Human in the Loop (to get human feedback for conditional edges)
+- Persistence
